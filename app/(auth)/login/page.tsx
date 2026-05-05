@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import supabase from '@/lib/supabase'
 
 export default function LoginPage() {
@@ -31,7 +32,10 @@ export default function LoginPage() {
   return (
     <>
       <div className="mb-8">
-        <span className="text-accent font-semibold text-sm tracking-wide uppercase">Flagify</span>
+        <div className="flex items-center gap-2">
+          <Image src="/flagify.png" alt="Flagify" width={24} height={24} />
+          <span className="text-accent font-semibold text-sm tracking-wide uppercase">Flagify</span>
+        </div>
         <h1 className="text-2xl font-semibold text-text-primary mt-2">Welcome back</h1>
         <p className="text-text-muted text-sm mt-1">Sign in to your account</p>
       </div>
