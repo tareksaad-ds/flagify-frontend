@@ -17,7 +17,7 @@ export async function apiFetch<T>(path: string, options: RequestInit = {}): Prom
 
   if (!res.ok) {
     const body = await res.json().catch(() => ({}))
-    throw new Error(body.message ?? `API error ${res.status}`)
+    throw new Error(body.error ?? body.message ?? `API error ${res.status}`)
   }
 
   return res.json() as Promise<T>
