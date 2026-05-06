@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { apiFetch } from '@/lib/api'
+import { useToast } from '@/components/ToastProvider'
 import type { FlagState, Rule } from '@/types'
 
 type Props = {
@@ -14,6 +15,7 @@ type Props = {
 const OPERATORS: Rule['operator'][] = ['equals', 'not_equals', 'contains', 'gt', 'lt']
 
 export default function FlagStateEditor({ projectId, flagId, state, onChange }: Props) {
+  const toast = useToast()
   const [localRollout, setLocalRollout] = useState(state.rollout_percentage)
   const [localRules, setLocalRules] = useState<Rule[]>(state.rules)
   const [saving, setSaving] = useState<'toggle' | 'rollout' | 'rules' | null>(null)
@@ -41,7 +43,7 @@ export default function FlagStateEditor({ projectId, flagId, state, onChange }: 
     try {
       await put({ enabled: !state.enabled })
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Failed to update flag')
+      toast(err instanceof Error ? err.message : 'Failed to update flag', 'error')
     } finally {
       setSaving(null)
     }
@@ -51,8 +53,9 @@ export default function FlagStateEditor({ projectId, flagId, state, onChange }: 
     setSaving('rollout')
     try {
       await put({ rollout_percentage: localRollout })
+      toast('Rollout saved')
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Failed to save rollout')
+      toast(err instanceof Error ? err.message : 'Failed to save rollout', 'error')
       setLocalRollout(state.rollout_percentage)
     } finally {
       setSaving(null)
@@ -63,8 +66,9 @@ export default function FlagStateEditor({ projectId, flagId, state, onChange }: 
     setSaving('rules')
     try {
       await put({ rules: localRules })
+      toast('Rules saved')
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Failed to save rules')
+      toast(err instanceof Error ? err.message : 'Failed to save rules', 'error')
       setLocalRules(state.rules)
     } finally {
       setSaving(null)

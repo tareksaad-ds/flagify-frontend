@@ -43,7 +43,16 @@ export type SdkKey = {
   project_id: string
   environment_id: string
   environment_name: string
+  revoked: boolean
+  created_at: string
+}
+
+export type SdkKeyCreated = {
+  id: string
+  project_id: string
+  environment_id: string
   name: string
+  key: string
   revoked: boolean
   created_at: string
 }

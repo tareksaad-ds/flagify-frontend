@@ -6,9 +6,10 @@ import type { Flag } from '@/types'
 type Props = {
   projectId: string
   flags: Flag[]
+  flashFlagKey?: string | null
 }
 
-export default function FlagList({ projectId, flags }: Props) {
+export default function FlagList({ projectId, flags, flashFlagKey }: Props) {
   if (flags.length === 0) {
     return (
       <div className="text-center py-16 border border-dashed border-border rounded-xl">
@@ -23,7 +24,7 @@ export default function FlagList({ projectId, flags }: Props) {
         <Link
           key={flag.id}
           href={`/projects/${projectId}/flags/${flag.id}`}
-          className={`flex items-center justify-between px-5 py-4 hover:bg-surface transition-colors group ${i < flags.length - 1 ? 'border-b border-border' : ''}`}
+          className={`flex items-center justify-between px-5 py-4 hover:bg-surface transition-colors group ${i < flags.length - 1 ? 'border-b border-border' : ''} ${flashFlagKey === flag.key ? 'ring-1 ring-inset ring-accent/50' : ''}`}
         >
           <div className="min-w-0">
             <p className="text-sm font-medium text-text-primary group-hover:text-accent transition-colors truncate">

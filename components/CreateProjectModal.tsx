@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { apiFetch } from '@/lib/api'
 import type { Project } from '@/types'
 
@@ -11,6 +11,12 @@ type Props = {
 
 export default function CreateProjectModal({ onClose, onCreated }: Props) {
   const [name, setName] = useState('')
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) { if (e.key === 'Escape') onClose() }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [onClose])
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -37,12 +43,18 @@ export default function CreateProjectModal({ onClose, onCreated }: Props) {
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
       onClick={e => { if (e.target === e.currentTarget) onClose() }}
     >
-      <div className="bg-surface border border-border rounded-xl p-6 w-full max-w-sm shadow-xl">
-        <h2 className="text-base font-semibold text-text-primary mb-4">New Project</h2>
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="create-project-title"
+        className="bg-surface border border-border rounded-xl p-6 w-full max-w-sm shadow-xl"
+      >
+        <h2 id="create-project-title" className="text-base font-semibold text-text-primary mb-4">New Project</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-text-primary mb-1.5">Project name</label>
+            <label htmlFor="project-name" className="block text-sm font-medium text-text-primary mb-1.5">Project name</label>
             <input
+              id="project-name"
               autoFocus
               type="text"
               required
