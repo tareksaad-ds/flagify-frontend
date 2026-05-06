@@ -74,12 +74,23 @@ export default function AuditLogTable({ projectId, flagId }: Props) {
       <h2 className="text-xs font-medium text-text-muted uppercase tracking-wide mb-4">Audit Log</h2>
 
       {loading ? (
-        <p className="text-sm text-text-muted">Loading…</p>
+        <div className="border border-border rounded-xl overflow-hidden animate-pulse">
+          <div className="h-9 bg-surface border-b border-border" />
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className={`flex items-center gap-4 px-5 py-3 ${i < 2 ? 'border-b border-border' : ''}`}>
+              <div className="h-3 bg-border rounded w-24 shrink-0" />
+              <div className="h-3 bg-border rounded flex-1" />
+              <div className="h-3 bg-border rounded w-16 shrink-0" />
+              <div className="h-3 bg-border rounded w-10 shrink-0" />
+              <div className="h-3 bg-border rounded w-28 shrink-0" />
+            </div>
+          ))}
+        </div>
       ) : logs.length === 0 ? (
         <p className="text-sm text-text-muted">No changes recorded yet.</p>
       ) : (
         <>
-          <div className="border border-border rounded-xl overflow-hidden">
+          <div className="border border-border rounded-xl overflow-x-auto">
             {/* Header */}
             <div
               className="grid bg-surface px-5 py-2.5 border-b border-border text-xs font-medium text-text-muted uppercase tracking-wide"

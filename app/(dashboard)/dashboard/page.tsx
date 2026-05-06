@@ -3,13 +3,19 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { apiFetch } from '@/lib/api'
+import { useToast } from '@/components/ToastProvider'
 import type { Project } from '@/types'
 import CreateProjectModal from '@/components/CreateProjectModal'
 
 export default function DashboardPage() {
+  const toast = useToast()
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
+
+  useEffect(() => {
+    document.title = 'Flagify — Projects'
+  }, [])
 
   async function loadProjects() {
     try {
@@ -30,7 +36,7 @@ export default function DashboardPage() {
       await apiFetch(`/projects/${id}`, { method: 'DELETE' })
       setProjects(prev => prev.filter(p => p.id !== id))
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Failed to delete project')
+      toast(err instanceof Error ? err.message : 'Failed to delete project', 'error')
     }
   }
 
@@ -47,7 +53,14 @@ export default function DashboardPage() {
       </div>
 
       {loading ? (
-        <p className="text-text-muted text-sm">Loading…</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="bg-surface border border-border rounded-xl p-5 animate-pulse">
+              <div className="h-4 bg-border rounded w-2/3 mb-2.5" />
+              <div className="h-3 bg-border rounded w-1/3" />
+            </div>
+          ))}
+        </div>
       ) : projects.length === 0 ? (
         <div className="text-center py-24 border border-dashed border-border rounded-xl">
           <p className="text-text-muted text-sm">No projects yet.</p>
@@ -92,6 +105,7 @@ export default function DashboardPage() {
           onCreated={project => {
             setProjects(prev => [...prev, project])
             setShowModal(false)
+            toast('Project created')
           }}
         />
       )}

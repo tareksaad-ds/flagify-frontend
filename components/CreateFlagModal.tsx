@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { apiFetch } from '@/lib/api'
 import type { Flag } from '@/types'
 
@@ -16,6 +16,12 @@ function toSlug(value: string) {
 
 export default function CreateFlagModal({ projectId, onClose, onCreated }: Props) {
   const [name, setName] = useState('')
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) { if (e.key === 'Escape') onClose() }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [onClose])
   const [key, setKey] = useState('')
   const [keyTouched, setKeyTouched] = useState(false)
   const [error, setError] = useState('')
@@ -54,12 +60,18 @@ export default function CreateFlagModal({ projectId, onClose, onCreated }: Props
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
       onClick={e => { if (e.target === e.currentTarget) onClose() }}
     >
-      <div className="bg-surface border border-border rounded-xl p-6 w-full max-w-sm shadow-xl">
-        <h2 className="text-base font-semibold text-text-primary mb-4">New Flag</h2>
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="create-flag-title"
+        className="bg-surface border border-border rounded-xl p-6 w-full max-w-sm shadow-xl"
+      >
+        <h2 id="create-flag-title" className="text-base font-semibold text-text-primary mb-4">New Flag</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-text-primary mb-1.5">Name</label>
+            <label htmlFor="flag-name" className="block text-sm font-medium text-text-primary mb-1.5">Name</label>
             <input
+              id="flag-name"
               autoFocus
               type="text"
               required
@@ -71,8 +83,9 @@ export default function CreateFlagModal({ projectId, onClose, onCreated }: Props
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-text-primary mb-1.5">Key</label>
+            <label htmlFor="flag-key" className="block text-sm font-medium text-text-primary mb-1.5">Key</label>
             <input
+              id="flag-key"
               type="text"
               required
               value={key}

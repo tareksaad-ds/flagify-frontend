@@ -23,7 +23,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
         <div className="flex items-center gap-4">
           {user?.email && (
-            <span className="text-sm text-text-muted">{user.email}</span>
+            <span className="text-sm text-text-muted hidden sm:block truncate max-w-[220px]">{user.email}</span>
           )}
           <button
             onClick={handleLogout}
