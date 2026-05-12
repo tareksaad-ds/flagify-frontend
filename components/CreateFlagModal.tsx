@@ -22,20 +22,8 @@ export default function CreateFlagModal({ projectId, onClose, onCreated }: Props
     document.addEventListener('keydown', onKey)
     return () => document.removeEventListener('keydown', onKey)
   }, [onClose])
-  const [key, setKey] = useState('')
-  const [keyTouched, setKeyTouched] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-
-  function handleNameChange(value: string) {
-    setName(value)
-    if (!keyTouched) setKey(toSlug(value))
-  }
-
-  function handleKeyChange(value: string) {
-    setKey(toSlug(value))
-    setKeyTouched(true)
-  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -44,7 +32,7 @@ export default function CreateFlagModal({ projectId, onClose, onCreated }: Props
     try {
       const flag = await apiFetch<Flag>(`/projects/${projectId}/flags`, {
         method: 'POST',
-        body: JSON.stringify({ key, name }),
+        body: JSON.stringify({ key: toSlug(name), name }),
       })
       onCreated(flag)
     } catch (err) {
@@ -76,22 +64,9 @@ export default function CreateFlagModal({ projectId, onClose, onCreated }: Props
               type="text"
               required
               value={name}
-              onChange={e => handleNameChange(e.target.value)}
+              onChange={e => setName(e.target.value)}
               placeholder="My Feature Flag"
               className="w-full bg-background border border-border rounded-lg px-3 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="flag-key" className="block text-sm font-medium text-text-primary mb-1.5">Key</label>
-            <input
-              id="flag-key"
-              type="text"
-              required
-              value={key}
-              onChange={e => handleKeyChange(e.target.value)}
-              placeholder="my-feature-flag"
-              className="w-full bg-background border border-border rounded-lg px-3 py-2.5 text-sm text-text-primary font-mono placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
             />
           </div>
 
